@@ -47,82 +47,106 @@ const sameSlice = type => ({
 })
 const layers = (...types) => ({ to: { element: { types: types } } })
 
+/**
+ * FSD architecture rules.
+ */
+
+const fsdArchitecture = {
+	files: ['app/**/*.{ts,tsx}', 'src/**/*.{ts,tsx}'],
+	plugins: { boundaries },
+	settings: {
+		'boundaries/elements': fsdElements,
+		'boundaries/include': ['app/**/*', 'src/**/*'],
+		'import/resolver': {
+			typescript: { alwaysTryTypes: true, project: './tsconfig.json' },
+		},
+	},
+	rules: {
+		/**
+		 * Layers may only import from layers strictly below them.
+		 */
+		'boundaries/dependencies': [
+			2,
+			{
+				default: 'disallow',
+				policies: [
+					{
+						from: { element: { type: 'routes' } },
+						allow: layers('app', 'pages', 'shared'),
+					},
+					{
+						from: { element: { type: 'app' } },
+						allow: layers('app', 'pages', 'features', 'entities', 'shared'),
+					},
+					{
+						from: { element: { type: 'pages' } },
+						allow: [
+							sameSlice('pages'),
+							layers('features', 'entities', 'shared'),
+						],
+					},
+					{
+						from: { element: { type: 'features' } },
+						allow: [sameSlice('features'), layers('entities', 'shared')],
+					},
+					{
+						from: { element: { type: 'entities' } },
+						allow: [sameSlice('entities'), layers('shared')],
+					},
+					{ from: { element: { type: 'shared' } }, allow: layers('shared') },
+				],
+			},
+		],
+		/**
+		 * Slices are consumed only through their public API (index.ts),
+		 *
+		 *  shared through a segment or component folder index.
+		 */
+		'no-restricted-imports': [
+			2,
+			{
+				patterns: [
+					{
+						regex: '^@/(_app|_pages|features|entities)/[^/]+/.+',
+						message: 'Import the slice through its public API (index.ts).',
+					},
+					{
+						regex: '^@/shared/[^/]+/[^/]+/.+',
+						message:
+							'Import shared code through its segment or component index.',
+					},
+					{
+						regex: '^(\\.\\./){2,}',
+						message: 'Use the @/ alias instead of deep relative imports.',
+					},
+				],
+			},
+		],
+		/**
+		 * Circular imports between modules are not allowed.
+		 */
+		'import/no-cycle': 2,
+	},
+}
+
+/**
+ * Inline `eslint-disable` comments are not honoured, so rules cannot be
+ *
+ * silently bypassed.
+ */
+
+const strictLinterOptions = {
+	linterOptions: {
+		noInlineConfig: true,
+		reportUnusedDisableDirectives: 'error',
+	},
+}
+
 const eslintConfig = defineConfig([
 	...nextVitals,
 	...nextTs,
-	{
-		files: ['app/**/*.{ts,tsx}', 'src/**/*.{ts,tsx}'],
-		plugins: { boundaries },
-		settings: {
-			'boundaries/elements': fsdElements,
-			'boundaries/include': ['app/**/*', 'src/**/*'],
-			'import/resolver': {
-				typescript: { alwaysTryTypes: true, project: './tsconfig.json' },
-			},
-		},
-		rules: {
-			/**
-			 * Layers may only import from layers strictly below them.
-			 */
-			'boundaries/dependencies': [
-				2,
-				{
-					default: 'disallow',
-					policies: [
-						{
-							from: { element: { type: 'routes' } },
-							allow: layers('app', 'pages', 'shared'),
-						},
-						{
-							from: { element: { type: 'app' } },
-							allow: layers('app', 'pages', 'features', 'entities', 'shared'),
-						},
-						{
-							from: { element: { type: 'pages' } },
-							allow: [
-								sameSlice('pages'),
-								layers('features', 'entities', 'shared'),
-							],
-						},
-						{
-							from: { element: { type: 'features' } },
-							allow: [sameSlice('features'), layers('entities', 'shared')],
-						},
-						{
-							from: { element: { type: 'entities' } },
-							allow: [sameSlice('entities'), layers('shared')],
-						},
-						{ from: { element: { type: 'shared' } }, allow: layers('shared') },
-					],
-				},
-			],
-			/**
-			 * Slices are consumed only through their public API (index.ts),
-			 *
-			 *  shared through a segment or component folder index.
-			 */
-			'no-restricted-imports': [
-				2,
-				{
-					patterns: [
-						{
-							regex: '^@/(_app|_pages|features|entities)/[^/]+/.+',
-							message: 'Import the slice through its public API (index.ts).',
-						},
-						{
-							regex: '^@/shared/[^/]+/[^/]+/.+',
-							message:
-								'Import shared code through its segment or component index.',
-						},
-						{
-							regex: '^(\\.\\./){2,}',
-							message: 'Use the @/ alias instead of deep relative imports.',
-						},
-					],
-				},
-			],
-		},
-	},
+	fsdArchitecture,
+	strictLinterOptions,
 
 	/**
 	 * Override default ignores of eslint-config-next.

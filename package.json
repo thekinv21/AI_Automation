@@ -6,7 +6,9 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "eslint",
+		"lint": "eslint --max-warnings 0",
+		"typecheck": "tsc --noEmit",
+		"test": "bun test --pass-with-no-tests",
 		"format": "prettier --write \"{app,src}/**/*.{ts,tsx}\"",
 		"format:check": "prettier --check \"{app,src}/**/*.{ts,tsx}\"",
 		"prepare": "husky"
