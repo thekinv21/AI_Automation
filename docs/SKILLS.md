@@ -2,14 +2,15 @@
 
 Skills give the AI agent (Claude Code etc.) expert rules for a specific topic. They load **automatically** when your request matches, or **manually** via `/skill-name`. Installed in `.claude/skills/`, versions locked in `skills-lock.json`.
 
-| Skill                            | Purpose                             |
-| -------------------------------- | ----------------------------------- |
-| `vercel-react-best-practices`    | React 19 / Next.js performance      |
-| `vercel-composition-patterns`    | Component API design, React 19 APIs |
-| `next-cache-components-adoption` | Next.js 16 Cache Components         |
-| `tailwind-design-system`         | Tailwind CSS v4 tokens & components |
-| `feature-sliced-design`          | FSD architecture                    |
-| `find-skills`                    | Find & install new skills           |
+| Skill                            | Purpose                              |
+| -------------------------------- | ------------------------------------ |
+| `vercel-react-best-practices`    | React 19 / Next.js performance       |
+| `vercel-composition-patterns`    | Component API design, React 19 APIs  |
+| `next-cache-components-adoption` | Next.js 16 Cache Components          |
+| `shadcn`                         | shadcn/ui components (every project) |
+| `tailwind-design-system`         | Tailwind CSS v4 tokens & components  |
+| `feature-sliced-design`          | FSD architecture                     |
+| `find-skills`                    | Find & install new skills            |
 
 ### Task workflow
 
@@ -76,6 +77,18 @@ async function getCategories() {
 	cacheLife('hours')
 	return db.category.findMany()
 }
+```
+
+### `shadcn`
+
+Official shadcn/ui skill (shadcn/ui): adding, searching, fixing and styling components, presets, registries,
+`components.json`. Every project uses shadcn/ui for its UI; components live in `src/shared/ui`.
+
+> "Add a login form with shadcn Card, Input and Button."
+
+```bash
+bunx --bun shadcn@latest init
+bunx --bun shadcn@latest add button card input
 ```
 
 ### `tailwind-design-system`
