@@ -11,6 +11,26 @@ Skills give the AI agent (Claude Code etc.) expert rules for a specific topic. T
 | `feature-sliced-design`          | FSD architecture                    |
 | `find-skills`                    | Find & install new skills           |
 
+### Task workflow
+
+`/task <description>` runs a task through 7 gated phases. It is a project skill
+([`.claude/skills/task`](../.claude/skills/task/SKILL.md)) that calls the skills below in order. Each task writes
+`docs/tasks/YYYY-MM-DD-<slug>/spec.md` and `plan.md`.
+
+| Phase                          | Skills                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------- |
+| 1. Ask questions, research     | `brainstorming` (obra/superpowers)                                        |
+| 2. Spec → sub-tasks, implement | `writing-plans` (obra/superpowers)                                        |
+| 3. Verify against the spec     | `verification-before-completion`, `validate-changes-match-specs` (warp)   |
+| 4. Security                    | built-in `/security-review`, `security-audit` (cloudflare, guidance mode) |
+| 5. Unit + E2E tests            | `playwright-best-practices` (currents-dev), [TEST.md](./TEST.md)          |
+| 6. Live Playwright check       | `playwright-cli` (microsoft), run as `npx playwright cli`                 |
+| 7. Simplify, UI review         | built-in `/simplify` and `/code-review`, `web-design-guidelines` (vercel) |
+
+The workflow writes tests after the code (phase 5), so the superpowers TDD skills (`test-driven-development`,
+`executing-plans`) are not installed. For a full repository security audit, ask for one explicitly:
+`security-audit` then runs all six phases and writes its report outside the repo.
+
 ---
 
 ### `vercel-react-best-practices`

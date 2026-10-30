@@ -177,6 +177,13 @@ const eslintConfig = defineConfig([
 		'out/**',
 		'build/**',
 		'next-env.d.ts',
+
+		/**
+		 * Third-party agent skills (installed via `npx skills`), not project code.
+		 */
+
+		'.claude/**',
+		'.agents/**',
 	]),
 ])
 
