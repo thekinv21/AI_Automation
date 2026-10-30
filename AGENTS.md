@@ -24,6 +24,10 @@ color, a renamed variable). Do these directly.
   boundaries.
 - Tests: see [docs/TEST.md](docs/TEST.md). Before finishing: `bun run lint`, `bun run typecheck`, `bun run test`,
   `bun run test:e2e`.
+- UI: every project uses [shadcn/ui](https://ui.shadcn.com). Load the `shadcn` skill before any UI work. Build
+  UI from shadcn components (`bunx --bun shadcn@latest add <component>`) instead of writing buttons, inputs,
+  dialogs etc. by hand. Generated components go to `src/shared/ui`, `cn` to `src/shared/lib`
+  (set the aliases in `components.json`).
 - Package manager: Bun. Do not use npm or yarn to install packages.
 - Commits only when the user asks. The header must be `type:[branch][developer]: description`, with type in
   `feat|fix|chore|docs|ci|test|refactor`, e.g. `feat:[master][Vadim]: ...`. Never bypass the hooks with
