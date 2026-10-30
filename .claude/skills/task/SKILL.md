@@ -1,7 +1,6 @@
 ---
 name: task
-description: Runs a task end to end through a fixed 7-phase workflow — clarify & research, spec + plan, implement, verify against the spec, security review, unit + E2E tests, live Playwright check, then simplify and UI review. Use when the user starts a task with /task.
-disable-model-invocation: true
+description: Runs a task end to end through a fixed 7-phase workflow — clarify & research, spec + plan, implement, verify against the spec, security review, unit + E2E tests, live Playwright check, then simplify and UI review. Use for every development task (feature, bug fix, refactor, UI change), whether or not the user typed /task.
 argument-hint: <task description>
 ---
 
