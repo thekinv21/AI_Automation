@@ -142,10 +142,27 @@ const strictLinterOptions = {
 	},
 }
 
+/**
+ * Module augmentation (e.g. jest-dom matchers for `bun:test`) needs
+ *
+ * interfaces that only extend another type.
+ */
+
+const typeDeclarations = {
+	files: ['**/*.d.ts'],
+	rules: {
+		'@typescript-eslint/no-empty-object-type': [
+			2,
+			{ allowInterfaces: 'with-single-extends' },
+		],
+	},
+}
+
 const eslintConfig = defineConfig([
 	...nextVitals,
 	...nextTs,
 	fsdArchitecture,
+	typeDeclarations,
 	strictLinterOptions,
 
 	/**

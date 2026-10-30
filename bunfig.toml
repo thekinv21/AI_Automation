@@ -1,0 +1,4 @@
+[test]
+# Unit/component tests live next to the code in src/; tests/e2e is Playwright's.
+root = "./src"
+preload = ["./tests/setup/happy-dom.ts", "./tests/setup/testing-library.ts"]
